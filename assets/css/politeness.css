@@ -23,31 +23,24 @@
     --color-badge-label-text: #4d4d4d;
 }
 
-/* ===== page shell — same locked-frame convention as index.html =====
-   container-type: inline-size makes .main-container a query container so its descendants can use
-   `cqw` (1% of the container's own width) instead of `vw` (1% of viewport) — needed because
-   `width: min(100%, 177.78vh)` can make this frame narrower than the viewport on short/landscape
-   screens, which would otherwise leave vw-sized children too big for the frame and clipped by its
-   overflow:hidden descendants (.content-card etc). NOTE: .side-nav lives OUTSIDE .main-container
-   in the markup (a body-level sibling, not a descendant), so its own vw values are intentionally
-   left alone — cqw would resolve to 0 there with no container ancestor to measure against. */
+/* ===== page shell — same locked-frame convention as index.html ===== */
+
 .topic-detail-page .main-container {
     position: relative;
-    container-type: inline-size;
     width: min(100%, 177.78vh);
     aspect-ratio: 1920 / 1080;
     margin: 0 auto;
 }
 
-/* No overflow override here: the shared style.css `body { overflow: hidden auto }` /
-   `html { height: 100% }` already handle this correctly. Forcing overflow:hidden on both
-   (as this page used to) clips content with no way to reach it once the mobile visual
-   viewport shrinks below the vh-based layout height (address bar showing/hiding, etc.) —
-   same bug fixed in vidhi-temp/gyan.css. */
 body.topic-detail-page {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+}
+
+html {
+    overflow: hidden;
 }
 
 .bg-photo {
@@ -139,7 +132,7 @@ body.topic-detail-page {
 
 .decor-blob img,
 .decor-cloud img {
-    filter: blur(0.651cqw);
+    filter: blur(0.651vw);
 }
 
 .decor-star--1 { left: 17.67%; top: 28.94%; width: 3.03%; height: 5.81%; }
@@ -169,19 +162,19 @@ body.topic-detail-page {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 1cqw 2cqw;
+    padding: 1vw 2vw;
     background: var(--color-title-bg);
-    border: 0.3125cqw solid #fff;
-    border-radius: 1.146cqw;
-    box-shadow: 0 0.208cqw 0.208cqw var(--color-title-shadow);
+    border: 0.3125vw solid #fff;
+    border-radius: 1.146vw;
+    box-shadow: 0 0.208vw 0.208vw var(--color-title-shadow);
     animation: drop-in-centered 0.8s ease-out both;
 }
 
 .title-pill__text {
     color: var(--color-title-text);
-    text-shadow: 0 0.208cqw 0.208cqw var(--color-title-shadow);
+    text-shadow: 0 0.208vw 0.208vw var(--color-title-shadow);
     white-space: nowrap;
-    font-size: 2cqw;
+    font-size: 2vw;
     font-weight: 700;
 }
 
@@ -195,9 +188,9 @@ body.topic-detail-page {
     height: 60%;
     overflow: hidden;
     background: var(--color-card-bg);
-    border: 0.521cqw solid var(--color-card-border);
-    border-radius: 2.083cqw;
-    box-shadow: 0 1.302cqw 1.5625cqw rgba(0, 0, 0, 0.25);
+    border: 0.521vw solid var(--color-card-border);
+    border-radius: 2.083vw;
+    box-shadow: 0 1.302vw 1.5625vw rgba(0, 0, 0, 0.25);
     animation: drop-in 0.8s ease-out both;
 }
 
@@ -241,16 +234,16 @@ body.topic-detail-page {
     justify-content: center;
     text-align: center;
     background: #fff;
-    border: 0.208cqw solid var(--color-bubble-border);
-    border-radius: 11.6cqw;
-    box-shadow: 0 0.156cqw 0.604cqw rgba(0, 0, 0, 0.43);
-    padding: 0.5cqw 1cqw;
+    border: 0.208vw solid var(--color-bubble-border);
+    border-radius: 11.6vw;
+    box-shadow: 0 0.156vw 0.604vw rgba(0, 0, 0, 0.43);
+    padding: 0.5vw 1vw;
     z-index: 2;
 }
 
 .dialogue-bubble__text {
     color: var(--color-bubble-text);
-    font-size: 1.25cqw;
+    font-size: 1.25vw;
     line-height: 1.3;
 }
 
@@ -277,7 +270,7 @@ body.topic-detail-page {
     display: block;
     width: 100%;
     height: auto;
-    filter: drop-shadow(0 0.208cqw 0.104cqw rgba(0, 0, 0, 0.25));
+    filter: drop-shadow(0 0.208vw 0.104vw rgba(0, 0, 0, 0.25));
 }
 
 .slider-arrow--prev {
@@ -328,9 +321,9 @@ body.topic-detail-page {
     left: 50%;
     transform: translate(-50%, -50%);
     color: #ffffff;
-    text-shadow: 0 0.1cqw 0.15cqw rgba(0, 0, 0, 0.35);
+    text-shadow: 0 0.1vw 0.15vw rgba(0, 0, 0, 0.35);
     font-weight: 700;
-    font-size: 1.2cqw;
+    font-size: 1.2vw;
     text-align: center;
     pointer-events: none;
 }
@@ -367,9 +360,9 @@ body.topic-detail-page {
 .caption-slider__text {
     color: var(--color-caption-text);
     font-weight: 800;
-    font-size: 2.5cqw;
+    font-size: 2.5vw;
     text-align: center;
-    text-shadow: 0 0.104cqw 0.104cqw var(--color-caption-shadow);
+    text-shadow: 0 0.104vw 0.104vw var(--color-caption-shadow);
     line-height: 1.3;
 }
 

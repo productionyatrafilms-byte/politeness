@@ -9,7 +9,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 45cqw;
+    width: 45vw;
     height: auto;
     display: flex;
     justify-content: center;
@@ -36,7 +36,7 @@
     position: absolute;
     top: 0%;
     left: 50%;
-    font-size: 3cqw;
+    font-size: 3vw;
     transform: translateX(-50%);
     color: #ffffff;
     font-weight: 700;
@@ -48,8 +48,8 @@
     top: 48%;
     transform: translate(-50%, -50%);
     background-color: #ffffff;
-    width: 31cqw;
-    height: 31cqw;
+    width: 31vw;
+    height: 31vw;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -96,7 +96,7 @@
     top: 88%;
     left: 50%;
     transform: translateX(-50%);
-    width: 15cqw;
+    width: 15vw;
     height: auto;
     transition: transform 0.2s ease;
 }
