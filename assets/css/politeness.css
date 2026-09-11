@@ -39,15 +39,15 @@
     margin: 0 auto;
 }
 
+/* No overflow override here: the shared style.css `body { overflow: hidden auto }` /
+   `html { height: 100% }` already handle this correctly. Forcing overflow:hidden on both
+   (as this page used to) clips content with no way to reach it once the mobile visual
+   viewport shrinks below the vh-based layout height (address bar showing/hiding, etc.) —
+   same bug fixed in vidhi-temp/gyan.css. */
 body.topic-detail-page {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-}
-
-html {
-    overflow: hidden;
 }
 
 .bg-photo {
