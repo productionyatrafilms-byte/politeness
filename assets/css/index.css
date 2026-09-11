@@ -1,0 +1,433 @@
+/* index.html — Politeness splash + topics
+   Built from Figma nodes 173:4447 (splash) and 173:4473 (topics settled state).
+   Font sizes use plain vw (no clamp) per explicit instruction.
+   See index.md for full per-layer coordinate breakdown. */
+
+:root {
+    --color-title-text: #fff;
+    --color-title-shadow: rgba(0, 0, 0, 0.25);
+
+    --color-enter-grad-start: #fffaaf;
+    --color-enter-grad-end: #ffe959;
+    --color-enter-border: #fff9e2;
+    --color-enter-text: #af6000;
+
+    /* hover state — from Figma node 176:8997 */
+    --color-enter-hover-grad-start: #cae7ff;
+    --color-enter-hover-grad-end: #68bcff;
+    --color-enter-hover-border: #fff;
+    --color-enter-hover-text: #fff;
+
+    --color-card-bg: #fffffa;
+    --color-card-border: #f5c947;
+    --color-card-text: #1295ff;
+    --color-card-shadow: rgba(0, 0, 0, 0.25);
+    --color-card-text-shadow: rgba(0, 0, 0, 0.2);
+}
+
+/* Fonts (Baloo/ITFDevanagari/NotoSansGujarati @font-face + .english/.hindi/.gujrati rules) are
+   declared once, globally, in style.css — every text span here picks up its font from its
+   language class, not from a per-element choice. Figma's own title/card fonts ("Swis721 LtEx
+   BT", "Abhaya Libre ExtraBold") aren't in /fonts and are superseded by that language-based
+   policy rather than given their own fallback. */
+
+/* ===== page shell =====
+   Per user report: with `.main-container` sized independently by width (100%) and height
+   (min-height:100vh, viewport-driven), the composition (mascot/title/cards) visibly "dispersed" —
+   drifted apart — on non-16:9 viewports, because horizontal and vertical percentages were scaling
+   against two unrelated bases. Fixed by locking `.main-container` to Figma's actual 1920:1080
+   aspect ratio via `aspect-ratio` + a `min()` width, so the whole frame scales as ONE proportional
+   unit (contain-fit inside the viewport, centered) — composition stays intact on every screen,
+   matching project.md's original "scale like a Figma preview" rule. `width: min(100%, 177.78vh)`
+   is the standard CSS "letterbox" trick: 177.78vh is the width that would exactly fill 100vh at
+   16:9, so taking the min of that and the container's own 100% width picks whichever dimension is
+   the limiting one, and `aspect-ratio` derives the other — never both independently. The
+   background (`.bg-photo`, `position:fixed`, full viewport) is intentionally NOT part of this
+   locked frame — it fills any letterboxed space around it so there's no visible bar, only the
+   actual figure/text composition is proportion-locked. */
+
+/* container-type: inline-size turns .main-container into a query container, so its descendants
+   can size themselves in `cqw` (1% of the container's OWN width) instead of `vw` (1% of the
+   viewport). Needed because `width: min(100%, 177.78vh)` above can make .main-container narrower
+   than the viewport on short/landscape screens — any child still sized in vw would then be too
+   big relative to the (now smaller) frame and get clipped by its overflow:hidden descendants. */
+.index-page .main-container {
+    position: relative;
+    container-type: inline-size;
+    width: min(100%, 177.78vh);
+    aspect-ratio: 1920 / 1080;
+    margin: 0 auto;
+}
+
+/* Per user request: no scroll on this page at all — before Enter (splash) or after (settled) —
+   overriding the global body{overflow:hidden auto}. `html` also needs `overflow:hidden`
+   explicitly: setting it only on body doesn't reliably suppress the actual viewport scrollbar
+   (the propagation from body to the viewport isn't consistent), and decorative elements
+   (stars/blobs/clouds) intentionally bleed past the frame's edges via negative left/top offsets
+   — normal position:absolute content that DOES count toward the document's scrollable area
+   unless something upstream actually clips it, unlike .bg-photo/.btn-home which dodge this
+   entirely by being position:fixed. Bug reported by user: horizontal + vertical scrollbars were
+   appearing because of this gap.
+   align-items:flex-end (not center): on a narrow/tall viewport the locked 16:9 frame (see
+   .main-container below) doesn't fill the whole screen height — it letterboxes. Centering it
+   split that gap evenly above AND below, which read as "the characters are floating" (a visible
+   band of empty sky beneath the mascot/Enter button, per user report — verified this wasn't a
+   mascot-sizing bug: outlining the actual boxes showed the mascot reaches the frame's own bottom
+   edge within <1px). Anchoring to the bottom instead puts all the letterboxing above the frame,
+   so the interactive content (mascot/Enter button/cards) sits flush at the actual bottom of the
+   screen with no gap below it at all. */
+html {
+    overflow: hidden;
+}
+
+body.index-page {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* background is always position:absolute/fixed (per convention) — a real bg.png asset (yellow
+   arc + blue sky baked in) rather than a CSS gradient reconstruction. `.frame-clip` keeps its own
+   overflow:hidden so decorative bg/star/cloud bleed stays contained — but the topic-card fan
+   intentionally bleeds past that same edge (confirmed against the Figma screenshot: outer cards
+   are NOT clipped), so the card fan is a sibling that stays outside `.frame-clip`, unclipped. */
+.frame-clip {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+/* position:fixed (not absolute) on purpose: the card fan's unclipped bleed makes the page
+   scrollable past one viewport, but `.bg-photo`'s height:100% only ever matched its positioned
+   ancestor's own box height (min-height:100vh) — not that extra scrollable extent — leaving a
+   white gap below the cards. Fixed-to-viewport sizing has no ancestor-height dependency at all,
+   so it always covers the visible area regardless of how tall the scrollable content gets. */
+.bg-photo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ===== decorative layers (stars / clouds / blobs) =====
+   ONE shared set (not duplicated per section, per user request) living outside both sections
+   entirely — direct children of #mainContainer alongside .bg-photo/.mascot. Each one's own
+   left/top/width/height/rotation transitions straight from its splash value to its settled
+   (topics) value, the same "single element actually moves" approach as .mascot. This also
+   removes the need for any overflow:hidden/visible toggle on these elements at all — nothing to
+   glitch on Enter, since there's no crossfade or clip-state flip involved anymore. */
+
+.decor-star,
+.decor-cloud,
+.decor-blob {
+    position: absolute;
+    pointer-events: none;
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1), top 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        width 0.6s cubic-bezier(0.4, 0, 0.2, 1), height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.decor-star img,
+.decor-cloud img,
+.decor-blob img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.decor-cloud img,
+.decor-blob img {
+    filter: blur(0.651cqw);
+}
+
+.decor-blob--1 { left: -7.49%; top: 44.34%; width: 14.99%; height: 16.73%; }
+.decor-blob--2 { left: 95.11%; top: 49.95%; width: 13.84%; height: 15.44%; }
+
+.main-container.settled .decor-blob--1 { left: -4.59%; top: 39.22%; width: 14.99%; height: 16.73%; }
+.main-container.settled .decor-blob--2 { left: 88.79%; top: 45.28%; width: 15.32%; height: 17.10%; }
+
+.decor-cloud--1 { left: -10.23%; top: 66.07%; width: 38.72%; height: 55.52%; transform: rotate(17.62deg); }
+.decor-cloud--2 { left: 80.25%; top: 77.82%; width: 35.14%; height: 41.06%; }
+
+.main-container.settled .decor-cloud--1 { top: 59.44%; }
+.main-container.settled .decor-cloud--2 { top: 72.18%; }
+
+.decor-star--1 { left: 17.67%; top: 28.94%; width: 3.03%; height: 5.81%; }
+.decor-star--2 { left: 86.67%; top: 47.54%; width: 3.91%; height: 6.89%; transform: rotate(51.62deg); }
+.decor-star--3 { left: 91.01%; top: 72.96%; width: 5.10%; height: 9.10%; transform: rotate(43.19deg); }
+.decor-star--4 { left: 10.41%; top: 68.74%; width: 7.27%; height: 13.48%; transform: rotate(15deg); }
+.decor-star--5 { left: 2.03%; top: 33.66%; width: 3.48%; height: 6.66%; }
+.decor-star--6 { left: 5.11%; top: 7.46%; width: 4.77%; height: 9.13%; }
+.decor-star--7 { left: 87.66%; top: 16.01%; width: 4.45%; height: 8.52%; }
+
+.main-container.settled .decor-star--1 { top: 26.53%; width: 4.29%; height: 8.21%; }
+.main-container.settled .decor-star--2 { left: 80.25%; top: 39.22%; width: 6.87%; height: 12.12%; }
+.main-container.settled .decor-star--3 { top: 63.09%; }
+.main-container.settled .decor-star--4 { top: 52.44%; }
+.main-container.settled .decor-star--5 { top: 31.41%; }
+.main-container.settled .decor-star--6 { left: 7.68%; top: 13.49%; width: 2.89%; height: 5.53%; }
+.main-container.settled .decor-star--7 { left: 88.79%; top: 19.03%; width: 2.22%; height: 4.24%; }
+
+/* ===== mascot (4 kids) =====
+   ONE shared element (see index.html — a direct child of #mainContainer, not duplicated per
+   section) so Enter animates its actual left/top/width directly from the splash values to the
+   topics values: the same character image visibly shrinks and moves up as a single continuous
+   transition, not two separate elements cross-fading. */
+
+.mascot {
+    position: absolute;
+    left: 13.33%;
+    top: 26.22%;
+    width: 73.34%;
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1), top 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-container.settled .mascot {
+    left: 26.09%;
+    top: 22%;
+    width: 47.82%;
+}
+
+.mascot img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* ===== title "Politeness" =====
+   ONE shared element (see index.html — a direct child of #mainContainer, not duplicated per
+   section, same approach as .mascot) so Enter animates its actual width/top/font-size directly
+   to the settled values: it visibly shrinks a little rather than two duplicated elements
+   cross-fading. `left:50%` + `transform:translateX(-50%)` stay CONSTANT across both states (both
+   splash and settled are horizontally centered — the original settled values, left 30.92% +
+   width 38.16%, are themselves symmetric around 50% anyway) rather than also being animated: only
+   `width`/`top`/`font-size` transition. Animating `left` and a width-dependent `transform`
+   together (the earlier version) produced a jittery, non-linear path since the percentage
+   transform kept recomputing against the simultaneously-changing width — keeping the anchor
+   fixed and shrinking around it, like `.mascot`, is the simple, clean version. */
+
+.title-pill {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1cqw 2cqw;
+    border: 0.3125cqw solid var(--color-title-text);
+    border-radius: 1.77cqw;
+    box-shadow: 0 0.208cqw 0.208cqw var(--color-title-shadow);
+    left: 50%;
+    transform: translateX(-50%);
+    top: 4.81%;
+    width: 40cqw;
+    transition: top 0.6s cubic-bezier(0.4, 0, 0.2, 1), width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-container.settled .title-pill {
+    top: 3.39%;
+    width: 38.16%;
+}
+
+.title-pill__text {
+    color: var(--color-title-text);
+    text-shadow: 0 0.208cqw 0.208cqw var(--color-title-shadow);
+    white-space: nowrap;
+    font-size: 4cqw;
+    transition: font-size 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-container.settled .title-pill__text {
+    font-size: 3cqw;
+}
+
+/* ===== Enter button (splash only) ===== */
+
+.btn-enter {
+    position: absolute;
+    left: 45.42%;
+    top: 86.99%;
+    width: 12%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5cqw 0;
+    background: linear-gradient(180deg, var(--color-enter-grad-start), var(--color-enter-grad-end));
+    border: 0.156cqw solid var(--color-enter-border);
+    border-radius: 50cqw;
+    box-shadow: 0 0.573cqw 0.802cqw -0.052cqw rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+/* hover state — colors read from Figma node 176:8997 (a separate hover-state frame) */
+.btn-enter:hover,
+.btn-enter:focus-visible {
+    background: linear-gradient(180deg, var(--color-enter-hover-grad-start), var(--color-enter-hover-grad-end));
+    border-color: var(--color-enter-hover-border);
+}
+
+.btn-enter__text {
+    color: var(--color-enter-text);
+    font-size: 1.875cqw;
+    transition: color 0.2s ease;
+}
+
+.btn-enter:hover .btn-enter__text,
+.btn-enter:focus-visible .btn-enter__text {
+    color: var(--color-enter-hover-text);
+}
+
+/* ===== home button (topics only) =====
+   Per user request: lives outside .main-container entirely (a direct child of body, not the
+   locked-aspect frame) so it's fixed to the actual top-left corner of the screen regardless of
+   letterboxing, and is a real navigation link to ./index.html rather than a soft "back to
+   splash" toggle. Only shown once settled (topics view) — `:has()` reaches into the frame to
+   check that state without needing DOM-order sibling tricks. */
+.btn-home {
+    position: fixed;
+    top: 2vh;
+    left: 2vw;
+    width: 4vw;
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 10;
+}
+
+body:has(.main-container.settled) .btn-home {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.btn-home img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0.208vw 0.104vw rgba(0, 0, 0, 0.25));
+}
+
+/* ===== topic card fan (topics only) ===== */
+
+.card-fan {
+    position: absolute;
+    inset: 0;
+}
+
+.card {
+    /* Per user request: the deck must actually be SEEN stacked together at center first, then
+       fan out from there — not fade+move at the same time (which read as a glitchy cross-fade,
+       and let the cursor land on a card mid-flight and fight the transition with :hover). So the
+       stack-vs-fan states are split into two separate triggers instead of one:
+       - `.main-container.settled` alone (added the instant Enter is clicked) only fades the
+         section in — cards are opacity:1 from the start, so what actually becomes visible is the
+         stacked pile, held still, at full (real) card size — not shrunk down.
+       - `.card-fan.fanned` (added ~0.4s later by index.js, once the stack has had a moment to
+         read as a stack) is what animates left/top/rotation out to the fanned Figma position —
+         the deck visibly "opens up" only at that point. Scale stays 1 throughout; only
+         rotation/position change.
+       `pointer-events:none` on the base state means the pile can't be hovered/clicked at all
+       until it's actually fanned, which is what was causing the glitch: hovering a card while it
+       was still sliding into place forced its transform to the hover value mid-transition. */
+    position: absolute;
+    left: 50%;
+    top: 85%;
+    width: 14.271%;
+    height: 36.852%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-card-bg);
+    border: 0.521cqw solid var(--color-card-border);
+    border-radius: 1.823cqw;
+    box-shadow: 0 0.208cqw 0.208cqw var(--color-card-shadow);
+    text-align: center;
+    text-decoration: none;
+    pointer-events: none;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1), top 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.35s ease;
+}
+
+.card-fan.fanned .card {
+    pointer-events: auto;
+    transform: translate(-50%, -50%) rotate(var(--card-rotate, 0deg)) scale(1);
+}
+
+.card-fan.fanned .card:hover,
+.card-fan.fanned .card:focus-visible {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1.05);
+    box-shadow: 0 0.417cqw 0.625cqw var(--color-card-shadow);
+    z-index: 10;
+}
+
+.card__text {
+    color: var(--color-card-text);
+    font-weight: 800;
+    font-size: 1.6cqw;
+    text-shadow: 0 0.104cqw 0.104cqw var(--color-card-text-shadow);
+    line-height: 1.3;
+}
+
+/* z-index counts DOWN from card 1 to card 6, on purpose: while stacked (pre-fan), all 6 sit at
+   the same left/top with no rotation, so the browser's default paint order would otherwise put
+   card 6 (last in DOM/HTML order) visibly on top of the pile — per user request, card 1 must be
+   the one on top of the stack instead. Kept on the fanned state too so the overlap between
+   adjacent fanned cards stays consistent; :hover's z-index:10 above still lifts whichever card
+   is actually being hovered above all of these. */
+.card--1 { --card-rotate: -14deg; z-index: 6; }
+.card--2 { --card-rotate: -10deg; z-index: 5; }
+.card--3 { --card-rotate: -5deg; z-index: 4; }
+.card--4 { --card-rotate: 5deg; z-index: 3; }
+.card--5 { --card-rotate: 10deg; z-index: 2; }
+.card--6 { --card-rotate: 15deg; z-index: 1; }
+
+.card-fan.fanned .card--1 { left: 14.735%; top: 89.987%; }
+.card-fan.fanned .card--2 { left: 29.084%; top: 85.268%; }
+.card-fan.fanned .card--3 { left: 43.529%; top: 80.765%; }
+.card-fan.fanned .card--4 { left: 57.325%; top: 80.763%; }
+.card-fan.fanned .card--5 { left: 71.727%; top: 85.266%; }
+.card-fan.fanned .card--6 { left: 85.988%; top: 90.929%; }
+
+/* ===== section visibility + settle transition ===== */
+
+#section-splash,
+#section-topics {
+    position: absolute;
+    inset: 0;
+    /* Clipped by default so an inactive section's off-canvas bleed doesn't add invisible scroll
+       space while hidden. Only #section-topics's card fan needs the "unclip while active"
+       override below — splash has nothing left inside it that bleeds, since the stars/blobs/
+       clouds moved out to be shared elements (see that section's comment above). `overflow`
+       itself can't be animated, so without the delay below it flips to `hidden` INSTANTLY the
+       moment .settled toggles — while the outgoing section is still fully opaque — chopping its
+       bleeding content off at the frame edge for a visible instant before the opacity fade has
+       masked it. Delaying it by the full fade duration keeps the section unclipped for its whole
+       fade-out, only clipping once it's already invisible (matters for topics' card fan on the
+       reverse, back-button transition). */
+    overflow: hidden;
+    transition: opacity 0.5s ease, overflow 0s linear 0.5s;
+}
+
+#section-topics {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.main-container.settled #section-splash {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.main-container.settled #section-topics {
+    opacity: 1;
+    pointer-events: auto;
+    overflow: visible;
+}
+
+/* No media queries: layout scales proportionally as one locked-aspect-ratio unit (see
+   `.index-page .main-container` above) and never rearranges or disperses on any viewport —
+   see index.md's Layout architecture note. */

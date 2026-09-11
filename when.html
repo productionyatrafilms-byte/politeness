@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When should we be Polite?</title>
+    <link rel="stylesheet" href="./assets/plugins/swiper-bundle.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/politeness.css?v=2">
+</head>
+
+<!-- data-topic-key selects this page's entry in topicPagesData (assets/js/data.js) — the title,
+     slides, dialogue bubbles, and captions below are all built by assets/js/topic-page.js from
+     that data, not hardcoded here. See when.md. -->
+<body id="body" class="topic-detail-page" data-topic-key="when">
+    <div id="langSelect">
+        <div id="language">
+            <label><input type="radio" onclick="val('English')" name="lang" id="en" value="English">
+                <span>E</span>
+            </label>
+            <label><input type="radio" onclick="val('Hindi')" name="lang" id="hi" value="Hindi">
+                <span>H</span>
+            </label>
+            <label><input type="radio" onclick="val('Gujrati')" name="lang" id="gu" value="Gujrati">
+                <span>G</span>
+            </label>
+        </div>
+    </div>
+
+    <a href="./index.html" class="btn-home" id="btnHome" aria-label="Home">
+        <img src="./assets/images/figma-home-icon.svg" alt="">
+    </a>
+
+    <div class="main-container" id="mainContainer">
+
+        <img class="bg-photo" src="./assets/images/bg1.png" alt="" aria-hidden="true">
+
+        <div class="sun-arc" aria-hidden="true"></div>
+
+        <div class="decor-blob decor-blob--1" aria-hidden="true">
+            <img src="./assets/images/figma-bg-blob.png" alt="">
+        </div>
+        <div class="decor-blob decor-blob--2" aria-hidden="true">
+            <img src="./assets/images/figma-bg-blob.png" alt="">
+        </div>
+        <div class="decor-cloud decor-cloud--1" aria-hidden="true">
+            <img src="./assets/images/figma-cloudleft.png" alt="">
+        </div>
+        <div class="decor-cloud decor-cloud--2" aria-hidden="true">
+            <img src="./assets/images/figma-cloudleft.png" alt="">
+        </div>
+        <div class="decor-star decor-star--1" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--2" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--3" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--4" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--5" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--6" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--7" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+
+        <!-- filled by topic-page.js -->
+        <h1 class="title-pill"></h1>
+
+        <div class="content-card">
+            <div class="swiper" id="mainSwiper">
+                <div class="swiper-wrapper"><!-- filled by topic-page.js --></div>
+            </div>
+        </div>
+
+        <div class="dialogue-overlay" id="dialogueOverlay"></div>
+
+        <button type="button" class="slider-arrow slider-arrow--prev" id="btnPrev" aria-label="Previous">
+            <img src="./assets/images/figma-arrow.svg" alt="">
+        </button>
+        <button type="button" class="slider-arrow slider-arrow--next" id="btnNext" aria-label="Next">
+            <img src="./assets/images/figma-arrow.svg" alt="">
+        </button>
+        <a href="./pranam.html" class="pranam-link" id="pranamLink" aria-label="Pranam">
+            <img src="./assets/images/arowAsset.png" alt="">
+            <span class="pranam-link__label">
+                <span class="english">Pranam</span>
+                <span class="hindi">प्रणाम</span>
+                <span class="gujrati">પ્રણામ</span>
+            </span>
+        </a>
+
+        <div class="caption-slider">
+            <div class="swiper" id="captionSwiper">
+                <div class="swiper-wrapper"><!-- filled by topic-page.js --></div>
+            </div>
+        </div>
+
+        </div>
+
+    <nav class="side-nav" aria-label="Topics">
+            <a href="./politeness.html" class="side-nav-badge" data-topic="what-is-politeness">
+                <span class="side-nav-badge__circle">
+                    <img src="./assets/images/figma-ellipse-badge.svg" alt="">
+                    <span class="side-nav-badge__number">1</span>
+                </span>
+                <span class="side-nav-badge__label">
+                    <span class="side-nav-badge__label-text english">What is Politeness?</span>
+                    <span class="side-nav-badge__label-text hindi">What is Politeness?</span>
+                    <span class="side-nav-badge__label-text gujrati">What is Politeness?</span>
+                </span>
+            </a>
+            <a href="./impoliteness.html" class="side-nav-badge" data-topic="what-is-impoliteness">
+                <span class="side-nav-badge__circle">
+                    <img src="./assets/images/figma-ellipse-badge.svg" alt="">
+                    <span class="side-nav-badge__number">2</span>
+                </span>
+                <span class="side-nav-badge__label">
+                    <span class="side-nav-badge__label-text english">What is Impoliteness?</span>
+                    <span class="side-nav-badge__label-text hindi">What is Impoliteness?</span>
+                    <span class="side-nav-badge__label-text gujrati">What is Impoliteness?</span>
+                </span>
+            </a>
+            <a href="./gesture.html" class="side-nav-badge" data-topic="impolite-gestures">
+                <span class="side-nav-badge__circle">
+                    <img src="./assets/images/figma-ellipse-badge.svg" alt="">
+                    <span class="side-nav-badge__number">3</span>
+                </span>
+                <span class="side-nav-badge__label">
+                    <span class="side-nav-badge__label-text english">Impolite gestures</span>
+                    <span class="side-nav-badge__label-text hindi">Impolite gestures</span>
+                    <span class="side-nav-badge__label-text gujrati">Impolite gestures</span>
+                </span>
+            </a>
+            <a href="./how.html" class="side-nav-badge" data-topic="how-can-we-be-polite">
+                <span class="side-nav-badge__circle">
+                    <img src="./assets/images/figma-ellipse-badge.svg" alt="">
+                    <span class="side-nav-badge__number">4</span>
+                </span>
+                <span class="side-nav-badge__label">
+                    <span class="side-nav-badge__label-text english">How can we be Polite?</span>
+                    <span class="side-nav-badge__label-text hindi">How can we be Polite?</span>
+                    <span class="side-nav-badge__label-text gujrati">How can we be Polite?</span>
+                </span>
+            </a>
+            <a href="./benefits.html" class="side-nav-badge" data-topic="benefits-of-polite">
+                <span class="side-nav-badge__circle">
+                    <img src="./assets/images/figma-ellipse-badge.svg" alt="">
+                    <span class="side-nav-badge__number">5</span>
+                </span>
+                <span class="side-nav-badge__label">
+                    <span class="side-nav-badge__label-text english">What are the benefits of <br>being Polite?</span>
+                    <span class="side-nav-badge__label-text hindi">What are the benefits of being Polite?</span>
+                    <span class="side-nav-badge__label-text gujrati">What are the benefits of being Polite?</span>
+                </span>
+            </a>
+            <a href="./when.html" class="side-nav-badge" data-topic="when-should-we-be-polite">
+                <span class="side-nav-badge__circle">
+                    <img src="./assets/images/figma-ellipse-badge.svg" alt="">
+                    <span class="side-nav-badge__number">6</span>
+                </span>
+                <span class="side-nav-badge__label">
+                    <span class="side-nav-badge__label-text english">When should we be Polite?</span>
+                    <span class="side-nav-badge__label-text hindi">When should we be Polite?</span>
+                    <span class="side-nav-badge__label-text gujrati">When should we be Polite?</span>
+                </span>
+            </a>
+        </nav>
+
+
+
+    <script src="./assets/plugins/swiper-bundle.min.js"></script>
+    <script src="./assets/js/jquery-3.7.1.js"></script>
+    <script src="./assets/js/custom.js"></script>
+    <script src="./assets/js/data.js"></script>
+    <script src="./assets/js/topic-page.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,468 @@
+/* politeness.html — "What is Politeness?" content page
+   Built from Figma nodes 173:4915 / 173:7644 / 173:7712 (same page, 3 slider positions).
+   Font sizes use plain vw (no clamp) per the project's explicit instruction.
+   Follows index.html's established conventions (see index.md's Layout architecture note):
+   locked 1920:1080 aspect-ratio frame (letterboxed, not stretched), full-viewport position:fixed
+   background, no forced heights on content-hugging boxes, language-driven fonts from style.css.
+   See politeness.md for full per-layer coordinate breakdown. */
+
+:root {
+    --color-title-bg: #ffdb20;
+    --color-title-text: #4d4d4d;
+    --color-title-shadow: rgba(0, 0, 0, 0.25);
+
+    --color-card-border: #fff;
+    --color-card-bg: #d5d5d5;
+
+    --color-bubble-border: #f5c947;
+    --color-bubble-text: #58554a;
+
+    --color-caption-text: #3d3d3d;
+    --color-caption-shadow: rgba(0, 0, 0, 0.3);
+
+    --color-badge-label-text: #4d4d4d;
+}
+
+/* ===== page shell — same locked-frame convention as index.html =====
+   container-type: inline-size makes .main-container a query container so its descendants can use
+   `cqw` (1% of the container's own width) instead of `vw` (1% of viewport) — needed because
+   `width: min(100%, 177.78vh)` can make this frame narrower than the viewport on short/landscape
+   screens, which would otherwise leave vw-sized children too big for the frame and clipped by its
+   overflow:hidden descendants (.content-card etc). NOTE: .side-nav lives OUTSIDE .main-container
+   in the markup (a body-level sibling, not a descendant), so its own vw values are intentionally
+   left alone — cqw would resolve to 0 there with no container ancestor to measure against. */
+.topic-detail-page .main-container {
+    position: relative;
+    container-type: inline-size;
+    width: min(100%, 177.78vh);
+    aspect-ratio: 1920 / 1080;
+    margin: 0 auto;
+}
+
+body.topic-detail-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+html {
+    overflow: hidden;
+}
+
+.bg-photo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ===== home button — fixed to the screen's top-left, same as index.html's .btn-home,
+   always visible on this page (single-state, no settle toggle to gate it) ===== */
+.btn-home {
+    position: fixed;
+    top: 2vh;
+    left: 2vw;
+    width: 4vw;
+    display: block;
+    z-index: 10;
+}
+
+.btn-home img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0.208vw 0.104vw rgba(0, 0, 0, 0.25));
+}
+
+/* ===== page-load entrance animation, per user request:
+   "the sun.png will come from the bottom and the titlebar and video slider will slide from top
+   to bottom and the text slider will come from bottom to top" ===== */
+
+/* CSS-drawn arc (not the sun.png raster) — a radial-gradient ellipse centered just below the
+   frame's bottom edge, so only its top portion peeks up as a dome. Scales cleanly to full width
+   at any aspect ratio with no distortion/pixelation, same technique as index.html's .bg-arc.
+   Sits earlier in the DOM than the decor-cloud/-blob/-star layers, so it renders behind them. */
+.sun-arc {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: 130%;
+    height: 120%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, #f8dc4c, #f5c947);
+    pointer-events: none;
+    animation: sun-rise-in 1s ease-out both;
+}
+
+@keyframes sun-rise-in {
+    from { transform: translate(-50%, -50%) translateY(35%); }
+    to { transform: translate(-50%, -50%) translateY(0); }
+}
+
+@keyframes drop-in {
+    from { transform: translateY(-130%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes drop-in-centered {
+    from { transform: translateX(-50%) translateY(-130%); opacity: 0; }
+    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+@keyframes rise-in {
+    from { transform: translateY(130%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* ===== decorative layers — stars/blobs/clouds, static (no settle animation on this page) =====
+   Reuses the exact same assets as index.html's splash frame. Positioned outside any clipping
+   wrapper so they can bleed into the letterboxed area around the locked frame, same reasoning
+   as index.html's decor-star/-blob/-cloud. */
+
+.decor-star,
+.decor-blob,
+.decor-cloud {
+    position: absolute;
+    pointer-events: none;
+}
+
+.decor-star img,
+.decor-blob img,
+.decor-cloud img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.decor-blob img,
+.decor-cloud img {
+    filter: blur(0.651cqw);
+}
+
+.decor-star--1 { left: 17.67%; top: 28.94%; width: 3.03%; height: 5.81%; }
+.decor-star--2 { left: 86.67%; top: 47.54%; width: 3.91%; height: 6.89%; transform: rotate(51.62deg); }
+.decor-star--3 { left: 91.01%; top: 72.96%; width: 5.10%; height: 9.10%; transform: rotate(43.19deg); }
+.decor-star--4 { left: 10.41%; top: 68.74%; width: 7.27%; height: 13.48%; transform: rotate(15deg); }
+.decor-star--5 { left: 2.03%; top: 33.66%; width: 3.48%; height: 6.66%; }
+.decor-star--6 { left: 5.11%; top: 7.46%; width: 4.77%; height: 9.13%; }
+.decor-star--7 { left: 87.66%; top: 16.01%; width: 4.45%; height: 8.52%; }
+
+.decor-blob--1 { left: -4.58%; top: 39.22%; width: 14.99%; height: 16.73%; }
+.decor-blob--2 { left: 88.79%; top: 45.28%; width: 15.32%; height: 17.10%; }
+
+.decor-cloud--1 { left: -3.54%; top: 59.44%; width: 38.72%; height: 55.52%; transform: rotate(17.62deg); }
+.decor-cloud--2 { left: 80.25%; top: 72.18%; width: 35.14%; height: 41.06%; }
+
+/* ===== title pill "What is Politeness?" — different palette from index.html's title
+   (solid yellow, dark text, not the blue gradient + white text scheme) ===== */
+
+.title-pill {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 3.47%;
+    width: 36.19%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1cqw 2cqw;
+    background: var(--color-title-bg);
+    border: 0.3125cqw solid #fff;
+    border-radius: 1.146cqw;
+    box-shadow: 0 0.208cqw 0.208cqw var(--color-title-shadow);
+    animation: drop-in-centered 0.8s ease-out both;
+}
+
+.title-pill__text {
+    color: var(--color-title-text);
+    text-shadow: 0 0.208cqw 0.208cqw var(--color-title-shadow);
+    white-space: nowrap;
+    font-size: 2cqw;
+    font-weight: 700;
+}
+
+/* ===== main content card + image slider ===== */
+
+.content-card {
+    position: absolute;
+    left: 25%;
+    top: 18.76%;
+    width: 50%;
+    height: 60%;
+    overflow: hidden;
+    background: var(--color-card-bg);
+    border: 0.521cqw solid var(--color-card-border);
+    border-radius: 2.083cqw;
+    box-shadow: 0 1.302cqw 1.5625cqw rgba(0, 0, 0, 0.25);
+    animation: drop-in 0.8s ease-out both;
+}
+
+.content-card .swiper,
+.content-card .swiper-slide {
+    width: 100%;
+    height: 100%;
+}
+
+.content-card .swiper-slide img,
+.content-card .swiper-slide video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Sits directly over .content-card at the same position/size, but WITHOUT
+   overflow:hidden — dialogue bubbles live here instead of inside the swiper
+   slide so a bubble positioned near/past the card's edge is never clipped. */
+.dialogue-overlay {
+    position: absolute;
+    left: 25%;
+    top: 18.76%;
+    width: 50%;
+    height: 60%;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.dialogue-group {
+    position: absolute;
+    inset: 0;
+}
+
+/* dialogue bubbles overlaid on slides 2/3 */
+.dialogue-bubble {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: #fff;
+    border: 0.208cqw solid var(--color-bubble-border);
+    border-radius: 11.6cqw;
+    box-shadow: 0 0.156cqw 0.604cqw rgba(0, 0, 0, 0.43);
+    padding: 0.5cqw 1cqw;
+    z-index: 2;
+}
+
+.dialogue-bubble__text {
+    color: var(--color-bubble-text);
+    font-size: 1.25cqw;
+    line-height: 1.3;
+}
+
+/* generic left/right positions — reusable on any slide, any page (not tied to a specific slide
+   number), since impoliteness.html/gesture.html need dialogue bubbles on different slides than
+   politeness.html did */
+.dialogue-bubble--left { left: 4.5%; top: 10%; width: 21%; }
+.dialogue-bubble--right { left: 76%; top: 12%; width: 21%; }
+
+/* nav arrows either side of the content card */
+.slider-arrow {
+    position: absolute;
+    top: 40%;
+    width: 5.885%;
+    height: 15.83%;
+    z-index: 3;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.slider-arrow img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0.208cqw 0.104cqw rgba(0, 0, 0, 0.25));
+}
+
+.slider-arrow--prev {
+  left: 16%;
+}
+
+.slider-arrow--prev img {
+    transform: rotate(180deg);
+}
+
+.slider-arrow--next {
+    left: 78%;
+}
+
+.pranam-link {
+    position: absolute;
+    right: 3%;
+    bottom: 3%;
+    width: 9%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    z-index: 20;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(1);
+    transition: opacity 0.3s ease;
+    animation: pranam-pop 1.2s ease-in-out infinite;
+}
+
+.pranam-link.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.pranam-link img {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.pranam-link__label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    text-shadow: 0 0.1cqw 0.15cqw rgba(0, 0, 0, 0.35);
+    font-weight: 700;
+    font-size: 1.2cqw;
+    text-align: center;
+    pointer-events: none;
+}
+
+@keyframes pranam-pop {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+}
+
+/* ===== caption text, synced to the main slider ===== */
+
+.caption-slider {
+    position: absolute;
+    left: 16.875%;
+    top: 83.67%;;
+    width: 67.24%;
+    height: 13%;
+    animation: rise-in 0.8s ease-out both;
+}
+
+/* vertical direction (per user request, replacing the earlier fade) needs the swiper + slides
+   to have an explicit height so it knows how far to slide between captions */
+.caption-slider .swiper,
+.caption-slider .swiper-slide {
+    height: 100%;
+}
+
+.caption-slider .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.caption-slider__text {
+    color: var(--color-caption-text);
+    font-weight: 800;
+    font-size: 2.5cqw;
+    text-align: center;
+    text-shadow: 0 0.104cqw 0.104cqw var(--color-caption-shadow);
+    line-height: 1.3;
+}
+
+/* ===== side navigation — 6 numbered badges, right edge =====
+   Each badge peeks in from the right edge showing only its circular number by default
+   (transform:translateX pushes the rest of the pill off-canvas), and slides fully into view on
+   hover/focus to reveal its label — see politeness.md 3.5.7 for why this is the reading of the
+   source geometry (the label sits entirely outside its own component's visible bounds at rest). */
+
+.side-nav {
+    position: absolute;
+    left: 84.39%;
+    top: 25.53%;
+    width: 16.15%;
+    height: 51.6%;
+}
+
+.side-nav-badge {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 13%;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    text-decoration: none;
+}
+
+.side-nav-badge:nth-child(1) { top: 0%; }
+.side-nav-badge:nth-child(2) { top: 18.5%; }
+.side-nav-badge:nth-child(3) { top: 37%; }
+.side-nav-badge:nth-child(4) { top: 55.5%; }
+.side-nav-badge:nth-child(5) { top: 74%; }
+.side-nav-badge:nth-child(6) { top: 92.5%; }
+
+.side-nav-badge__circle {
+    position: relative;
+    flex: 0 0 24.5%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0.208vw 0.104vw rgba(0, 0, 0, 0.25));
+    z-index: 1;
+}
+
+.side-nav-badge__circle img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.side-nav-badge__number {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    font-size: 1.875vw;
+    font-weight: 700;
+}
+
+/* Circle stays put; the label pill grows out from behind it on hover/focus,
+   matching the 9-punya-bandh side-nav expansion mechanic. */
+.side-nav-badge__label {
+    flex: 0 0 auto;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    min-height: 84%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 50vw;
+    box-shadow: 0 0.15vw 0.3vw rgba(0, 0, 0, 0.2);
+    padding: 0;
+    margin-right: -1.5vw;
+    transition: max-width 0.4s ease, padding 0.4s ease;
+}
+
+.side-nav-badge:hover .side-nav-badge__label,
+.side-nav-badge:focus-visible .side-nav-badge__label {
+    max-width: 26vw;
+    padding: 0.8vw 2vw 0.8vw 1.3vw;
+}
+
+.side-nav-badge__label-text {
+    color: var(--color-badge-label-text);
+    font-size: 1.25vw;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+}
+
+/* No media queries: layout scales proportionally as one locked-aspect-ratio unit, same as
+   index.html — see index.md's Layout architecture note. */

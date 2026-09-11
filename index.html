@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politeness</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/index.css?v=2">
+</head>
+
+<body id="body" class="index-page">
+    <div id="langSelect">
+        <div id="language">
+            <label><input type="radio" onclick="val('English')" name="lang" id="en" value="English">
+                <span>E</span>
+            </label>
+            <label><input type="radio" onclick="val('Hindi')" name="lang" id="hi" value="Hindi">
+                <span>H</span>
+            </label>
+            <label><input type="radio" onclick="val('Gujrati')" name="lang" id="gu" value="Gujrati">
+                <span>G</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Per user request: moved outside .main-container (the locked-aspect frame) entirely —
+         fixed to the actual top-left corner of the screen (not the frame), so it stays put
+         regardless of letterboxing, and navigates for real to the home page (./index.html)
+         instead of just toggling back to the splash section within this page. Only shown once
+         settled (topics view) — see index.css. -->
+    <a href="./index.html" class="btn-home" id="btnHome" aria-label="Home">
+        <img src="./assets/images/figma-home-icon.svg" alt="">
+    </a>
+
+    <div class="main-container" id="mainContainer">
+
+        <!-- shared across both sections — position:fixed (see index.css), so it must stay a
+             direct child of .main-container, not nested inside a section that toggles opacity
+             (opacity < 1 establishes a containing block for fixed descendants, breaking this) -->
+        <img class="bg-photo" src="./assets/images/bg.png" alt="" aria-hidden="true">
+
+        <!-- shared across both sections, same reasoning as .bg-photo above: ONE element whose
+             left/top/width transitions directly between the splash and settled values (see
+             index.css), so it visibly shrinks and rises as a single continuous animation on
+             Enter rather than two separate elements cross-fading. -->
+        <div class="mascot" id="mascot">
+            <img src="./assets/images/character.png" alt="Four children with hands folded in a polite greeting">
+        </div>
+
+        <!-- shared across both sections, same reasoning as .mascot above: ONE title-pill whose
+             left/top/width/font-size transitions directly to the settled values, so it visibly
+             shrinks a little on Enter rather than two duplicated elements cross-fading. -->
+        <h1 class="title-pill" id="titlePill">
+            <span class="title-pill__text english">Politeness</span>
+            <span class="title-pill__text hindi">विनम्रता</span>
+            <span class="title-pill__text gujrati">નમ્રતા</span>
+        </h1>
+
+        <!-- Stars/blobs/clouds: also shared/single per user request ("don't duplicate the stars
+             blob for the second screen ... they'll just move up, simple") — NOT nested in either
+             section at all, so there's no overflow:hidden/visible toggle to glitch on Enter; each
+             one's left/top/width/height/rotate transitions directly to its settled position (see
+             index.css .decor-star--N etc). This is what made the "container glitch" go away for
+             good: no crossfade, no clip-state flip, nothing to flash. -->
+        <div class="decor-blob decor-blob--1" aria-hidden="true">
+            <img src="./assets/images/figma-bg-blob.png" alt="">
+        </div>
+        <div class="decor-blob decor-blob--2" aria-hidden="true">
+            <img src="./assets/images/figma-bg-blob.png" alt="">
+        </div>
+        <div class="decor-cloud decor-cloud--1" aria-hidden="true">
+            <img src="./assets/images/figma-cloudleft.png" alt="">
+        </div>
+        <div class="decor-cloud decor-cloud--2" aria-hidden="true">
+            <img src="./assets/images/figma-cloudleft.png" alt="">
+        </div>
+        <div class="decor-star decor-star--1" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--2" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--3" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--4" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--5" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--6" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+        <div class="decor-star decor-star--7" aria-hidden="true">
+            <img src="./assets/images/figma-star.png" alt="">
+        </div>
+
+        <!-- ===================== Frame 1 — splash / Enter screen ===================== -->
+        <section id="section-splash" aria-label="Politeness — splash">
+        <div class="frame-clip">
+
+            <button type="button" class="btn-enter" id="btnEnter">
+                <span class="btn-enter__text english">Click</span>
+                <span class="btn-enter__text hindi">क्लिक करें</span>
+                <span class="btn-enter__text gujrati">એન્ટર કરો</span>
+            </button>
+
+        </div>
+        </section>
+
+        <!-- ===================== Frame 2 — topics / settled state ===================== -->
+        <section id="section-topics" aria-label="Politeness — topics">
+
+            <nav class="card-fan" aria-label="Topics">
+                <a href="./politeness.html" class="card card--1" data-topic="what-is-politeness">
+                    <span class="card__text english">1.<br>What is Politeness?</span>
+                    <span class="card__text hindi">1.<br>विनम्रता क्या है?
+</span>
+                    <span class="card__text gujrati">1.<br>નમ્રતા શું છે?
+</span>
+                </a>
+                <a href="./impoliteness.html" class="card card--2" data-topic="what-is-impoliteness">
+                    <span class="card__text english">2.<br>What is Impoliteness?</span>
+                    <span class="card__text hindi">2.<br>असभ्यता क्या है?</span>
+                    <span class="card__text gujrati">2.<br>અસભ્યતા શું છે?
+</span>
+                </a>
+                <a href="./gesture.html" class="card card--3" data-topic="impolite-gestures">
+                    <span class="card__text english">3.<br>Impolite gestures</span>
+                    <span class="card__text hindi">3.<br>असभ्य हाव - भाव 
+</span>
+                    <span class="card__text gujrati">3.<br>અવિનયી હાવભાવ
+</span>
+                </a>
+                <a href="./how.html" class="card card--4" data-topic="how-can-we-be-polite">
+                    <span class="card__text english">4.<br>How can we be Polite?</span>
+                    <span class="card__text hindi">4.<br>हम विनम्र कैसे बन सकते हैं ?
+</span>
+                    <span class="card__text gujrati">4.<br>આપણે વિનમ્ર કેવી રીતે બની શકીએ?
+</span>
+                </a>
+                <a href="./benefits.html" class="card card--5" data-topic="benefits-of-polite">
+                    <span class="card__text english">5.<br>What are the benefits of being Polite?</span>
+                    <span class="card__text hindi">5.<br>विनम्र होने के क्या लाभ होते हैं ?
+</span>
+                    <span class="card__text gujrati">5.<br>વિનમ્ર બનવાના ફાયદા શું છે?
+</span>
+                </a>
+                <a href="./when.html" class="card card--6" data-topic="when-should-we-be-polite">
+                    <span class="card__text english">6.<br>When should we be Polite?</span>
+                    <span class="card__text hindi">6.<br>हमें विनम्र कब रहना चाहिए ?
+</span>
+                    <span class="card__text gujrati">6.<br>આપણે ક્યારે વિનમ્ર રહેવું જોઈએ?
+</span>
+                </a>
+            </nav>
+
+        </section>
+
+    </div>
+
+    <script src="./assets/js/jquery-3.7.1.js"></script>
+    <script src="./assets/js/custom.js"></script>
+    <script src="./assets/js/index.js"></script>
+</body>
+
+</html>
