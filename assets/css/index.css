@@ -179,7 +179,10 @@ body.index-page {
         width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.main-container.settled .mascot {
+/* Per user request: the character rises together with the cards fanning out, both starting the
+   instant Enter is clicked — driven by its own `.risen` trigger class (added by index.js at the
+   same time as `.settled` and `.fanned`), kept separate from `.settled` for clarity. */
+.main-container.risen .mascot {
     left: 26.09%;
     top: 22%;
     width: 47.82%;

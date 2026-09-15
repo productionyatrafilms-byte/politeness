@@ -17,15 +17,12 @@
             enterAudio.currentTime = 0;
             enterAudio.play().catch(function () {});
 
+            // Per user request: cards fan out and the character rises together, both starting
+            // right on click — no staggered "stack pauses, then fans out" delay.
             mainContainer.classList.add("settled");
-
-            // Deliberately delayed: the topics section itself fades in over 0.5s (see
-            // index.css), so this lets the stacked deck actually be seen sitting at center
-            // before it fans out, instead of fanning out mid-fade.
+            mainContainer.classList.add("risen");
             if (cardFan) {
-                setTimeout(function () {
-                    cardFan.classList.add("fanned");
-                }, 450);
+                cardFan.classList.add("fanned");
             }
         });
     }
