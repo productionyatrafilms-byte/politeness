@@ -306,8 +306,8 @@ position/size, fades out the Enter button, and fades in the home button + langua
     frame beyond the Enter button's own name — the splash→topics transition and card destinations
     are inferred from the visual design + the general "onboarding sequence" pattern this repo
     already uses elsewhere, not read from explicit Figma prototype wiring. Flagged for designer review.
-  - `assets/js/djp.js` (obfuscated decode/eval script referenced by basic-template.html and every
-    other existing page) is intentionally NOT included in index.html — confirmed with the user as
+  - `assets/js/djp.js` (obfuscated decode/eval script; since deleted from the project along with its
+    script tags and its `.back-button` hide rule) was intentionally NOT included in index.html — confirmed with the user as
     a security concern (obfuscated eval chain + undocumented `/check_session.php` redirect logic)
     to be investigated separately, not part of this build.
   - The 3rd frame row in figma-links.md's index.html table (old Punya Bandh file, node-id=17-666)

@@ -70,11 +70,6 @@ body::-webkit-scrollbar {
     font-family: "NotoSansGujarati", sans-serif;
 }
 
-/* djp.js injects this button expecting a close.png asset we don't have */
-.back-button {
-    display: none !important;
-}
-
 /* top right fixed language bar */
 #language {
     background-color: #4e9ebf;
