@@ -55,18 +55,23 @@
     // Built into #dialogueOverlay (a sibling of .content-card, same position/size but
     // WITHOUT overflow:hidden) instead of inside the swiper slide itself, so a bubble
     // positioned near or past the card's edge is never clipped by the card's own bounds.
-    // One .dialogue-group per slide; only the group matching the active slide is shown.
+    // One .dialogue-group per slide; only the group matching the active slide is shown —
+    // its bubbles pop in when it becomes active and pop out when the slide changes (see
+    // setActiveDialogueGroup below and the "dialogue bubble pop animation" block in
+    // politeness.css).
     var dialogueOverlay = document.getElementById("dialogueOverlay");
     var dialogueGroups = [];
     if (dialogueOverlay) {
         data.slides.forEach(function (slide, index) {
             var group = document.createElement("div");
             group.className = "dialogue-group";
-            group.hidden = index !== 0;
+            group.setAttribute("aria-hidden", "true");
 
-            (slide.dialogues || []).forEach(function (bubble) {
+            (slide.dialogues || []).forEach(function (bubble, bubbleIndex) {
                 var bubbleEl = document.createElement("div");
                 bubbleEl.className = "dialogue-bubble dialogue-bubble--" + bubble.position;
+                // staggers the pop-in so a slide's bubbles appear one after another
+                bubbleEl.style.setProperty("--bubble-index", bubbleIndex);
 
                 // Optional per-bubble position overrides (any CSS length/percentage
                 // string), so a bubble can be placed anywhere, including outside the
@@ -131,10 +136,40 @@
         if (pranamLink) pranamLink.classList.toggle("is-visible", mainSwiper.isEnd);
     }
 
+    // matches --bubble-pop-out-duration in politeness.css (0.25s) plus a little slack, so the
+    // "is-leaving" class is only cleared once the pop-out has finished playing
+    var DIALOGUE_POP_OUT_MS = 300;
+    var activeDialogueIndex = -1;
+
+    function setActiveDialogueGroup(newIndex) {
+        if (newIndex === activeDialogueIndex) {
+            return;
+        }
+
+        var leaving = dialogueGroups[activeDialogueIndex];
+        if (leaving) {
+            leaving.classList.remove("is-active");
+            leaving.classList.add("is-leaving");
+            leaving.setAttribute("aria-hidden", "true");
+            clearTimeout(leaving.leaveTimer);
+            leaving.leaveTimer = setTimeout(function () {
+                leaving.classList.remove("is-leaving");
+            }, DIALOGUE_POP_OUT_MS);
+        }
+
+        var entering = dialogueGroups[newIndex];
+        if (entering) {
+            clearTimeout(entering.leaveTimer);
+            entering.classList.remove("is-leaving");
+            entering.classList.add("is-active");
+            entering.setAttribute("aria-hidden", "false");
+        }
+
+        activeDialogueIndex = newIndex;
+    }
+
     function updateDialogueGroups() {
-        dialogueGroups.forEach(function (group, index) {
-            group.hidden = index !== mainSwiper.activeIndex;
-        });
+        setActiveDialogueGroup(mainSwiper.activeIndex);
     }
 
     mainSwiper.on("slideChange", function () {
@@ -144,6 +179,10 @@
     });
 
     updateArrows();
+
+    // first slide's bubbles (on pages that have any) pop in once the page's own entrance
+    // animation has settled, rather than the instant the script runs
+    setTimeout(updateDialogueGroups, 800);
 
     var swiperAudio = new Audio("./assets/audio/swiper.mp3");
     function playSwiperSound() {

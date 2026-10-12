@@ -136,3 +136,31 @@
 .back-btn:hover {
     transform: scale(1.15);
 }
+
+/* ===== video circle matched to pranam-ref.html =====
+   Based on the reference page's .pranam-video: a smaller circle (29vw, a touch bigger than the reference's 28vw) (so the card's own
+   ring stays visible around it instead of being covered), the pranam-bg-1.png pattern behind the
+   video, and the masked video at 90% x 83%. */
+
+.pranam-video {
+    top: 49%;
+    width: 29vw;
+    height: 29vw;
+    background-color: #f6f6f6;
+    background-image: url("../images/pranam-bg-1.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 5;
+}
+
+.pranam-video video {
+    width: 90%;
+    height: 83%;
+}
+
+/* nudge the video a little to the left inside its circle (the circle itself stays
+   centred on the card's ring) */
+.pranam-video video {
+    transform: translateX(-2vw);
+}

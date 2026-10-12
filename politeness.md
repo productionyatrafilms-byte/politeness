@@ -108,6 +108,17 @@ Correction note for its own off-canvas cluster).
                  65.3%/top 22.2%, both width ~12.1%, height ~15.5%
           3.3.4- slide 3 positions: left bubble ~left 20.8%/top 21.9% (same as slide 2 — only the
                  text differs), right bubble ~left 67.7%/top 22.2%
+          3.3.5- pop animation (per user request, applies to every page built by
+                 topic-page.js, not just this one): bubbles start collapsed (scale 0, opacity 0).
+                 When a slide becomes active its bubbles POP IN — 0.3s after the change (so the
+                 slide has moved first), 0.5s long with a slight overshoot (cubic-bezier
+                 0.34,1.56,0.64,1), each bubble 0.15s after the previous one. When the slide
+                 changes, the bubbles of the slide being left POP OUT immediately (0.25s, scale 1→0
+                 and fade). Driven by the classes `is-active` / `is-leaving` on
+                 `.dialogue-group` (set in topic-page.js); timings are CSS variables in the
+                 "dialogue bubble pop animation" block at the end of politeness.css. First slide's
+                 bubbles (on pages that have any) pop in 0.8s after load. Respects
+                 prefers-reduced-motion (no animation, bubbles just show).
 
      3.4- caption text (below the content card), SYNCED to the main image slider — one caption
           per slide, shown/hidden in lockstep with the active slide (Swiper fade-effect synced

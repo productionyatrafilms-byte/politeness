@@ -457,5 +457,94 @@ html {
     text-align: center;
 }
 
+/* ===== dialogue bubble pop animation =====
+   Bubbles are always in the DOM but start collapsed (scale 0, transparent). topic-page.js
+   gives the active slide's .dialogue-group the class "is-active" (bubbles pop in, a beat after
+   the slide has moved) and, when the slide changes, gives the group it just left "is-leaving"
+   (bubbles pop out straight away) before clearing it. */
+
+:root {
+    --bubble-pop-in-duration: 0.5s;
+    --bubble-pop-in-delay: 0.3s;
+    --bubble-pop-in-stagger: 0.15s;
+    --bubble-pop-out-duration: 0.25s;
+    --bubble-pop-in-easing: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --bubble-pop-out-easing: cubic-bezier(0.55, 0, 1, 0.45);
+}
+
+.dialogue-bubble {
+    transform: scale(0);
+    opacity: 0;
+}
+
+.dialogue-group.is-active .dialogue-bubble {
+    animation: bubble-pop-in var(--bubble-pop-in-duration) var(--bubble-pop-in-easing) both;
+    animation-delay: calc(var(--bubble-pop-in-delay) + var(--bubble-index, 0) * var(--bubble-pop-in-stagger));
+}
+
+.dialogue-group.is-leaving .dialogue-bubble {
+    animation: bubble-pop-out var(--bubble-pop-out-duration) var(--bubble-pop-out-easing) both;
+}
+
+@keyframes bubble-pop-in {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    35% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes bubble-pop-out {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dialogue-group.is-active .dialogue-bubble {
+        animation: none;
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    .dialogue-group.is-leaving .dialogue-bubble {
+        animation: none;
+    }
+}
+
+/* ===== caption text sized to the frame, not the window =====
+   .main-container is a locked 16:9 frame whose width is min(100%, 177.78vh), but the caption's
+   plain 2.5vw font follows the WINDOW width. In a wide, short window (e.g. 1920 x 890) the frame
+   shrinks while the text does not, so a two-line caption grows taller than its own slide in the
+   vertical caption slider and the top of the NEXT caption shows underneath it. Capping the font
+   at 2.5% of the frame's width (4.444vh = 2.5% of 177.78vh) keeps the text in proportion to its
+   slide at any window shape; in a 16:9 window the cap is not reached, so nothing changes there. */
+.caption-slider__text {
+    font-size: min(2.5vw, 4.444vh);
+}
+
+/* ===== line breaks written in data.js =====
+   Text comes from data.js via textContent, and the spans default to white-space: normal, which
+   turns a "\n" in a string into a plain space. pre-line keeps each "\n" as a real line break
+   (and still wraps normally, still collapses extra spaces), so a caption, dialogue bubble or
+   title can be split exactly where data.js says, e.g. "Say ‘Thank You’ when someone \ngives you
+   something." */
+.caption-slider__text,
+.dialogue-bubble__text,
+.title-pill__text {
+    white-space: pre-line;
+}
+
 /* No media queries: layout scales proportionally as one locked-aspect-ratio unit, same as
    index.html — see index.md's Layout architecture note. */
