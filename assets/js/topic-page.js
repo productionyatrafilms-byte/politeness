@@ -34,18 +34,25 @@
 
     // ---- main slider (video) ----
     var mainWrapper = document.querySelector("#mainSwiper .swiper-wrapper");
+    var slideVideos = [];
     if (mainWrapper) {
-        data.slides.forEach(function (slide) {
+        data.slides.forEach(function (slide, index) {
             var slideEl = document.createElement("div");
             slideEl.className = "swiper-slide";
 
             var video = document.createElement("video");
-            video.src = slide.video;
-            video.autoplay = true;
+            // only the first (active) slide's video loads and plays right away; the others
+            // stay unloaded (preload "none", no autoplay) until their slide becomes active —
+            // see updateSlideVideos below. preload is set BEFORE src so the browser never
+            // starts fetching an inactive slide's video.
+            video.preload = index === 0 ? "auto" : "none";
+            video.autoplay = index === 0;
             video.muted = true;
             video.loop = true;
             video.playsInline = true;
+            video.src = slide.video;
             slideEl.appendChild(video);
+            slideVideos.push(video);
 
             mainWrapper.appendChild(slideEl);
         });
@@ -172,13 +179,41 @@
         setActiveDialogueGroup(mainSwiper.activeIndex);
     }
 
+    // the active slide's video preloads fully and plays; every other slide's video is paused and
+    // set to preload "none" so it does not download until its slide is reached
+    function updateSlideVideos() {
+        slideVideos.forEach(function (video, index) {
+            if (index === mainSwiper.activeIndex) {
+                video.preload = "auto";
+                var playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function () {});
+                }
+            } else {
+                video.preload = "none";
+                video.autoplay = false;
+                video.pause();
+            }
+        });
+    }
+
     mainSwiper.on("slideChange", function () {
         captionSwiper.slideTo(mainSwiper.activeIndex);
         updateArrows();
         updateDialogueGroups();
+        updateSlideVideos();
     });
 
     updateArrows();
+    updateSlideVideos();
+
+    // browsers refuse to start video in a hidden tab, so pick the active slide's video back up
+    // when the tab is shown again
+    document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) {
+            updateSlideVideos();
+        }
+    });
 
     // first slide's bubbles (on pages that have any) pop in once the page's own entrance
     // animation has settled, rather than the instant the script runs
