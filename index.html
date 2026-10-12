@@ -7,6 +7,7 @@
     <title>Politeness</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="stylesheet" href="./assets/css/index.css?v=2">
+    <link rel="stylesheet" href="./assets/css/video-popup.css?v=5">
 </head>
 
 <body id="body" class="index-page">
@@ -164,6 +165,11 @@
     <script src="./assets/js/jquery-3.7.1.js"></script>
     <script src="./assets/js/custom.js"></script>
     <script src="./assets/js/index.js"></script>
+    <script src="./assets/js/video-popup.js?v=3"></script>
+    <script>
+        // START pill (top-left) that plays v1.webm in a popup
+        initVideoPopup({ src: "./assets/videos/v1.webm", slideIndex: 0, corner: "top-left" }).sync(0);
+    </script>
 </body>
 
 </html>

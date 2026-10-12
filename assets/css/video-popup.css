@@ -1,0 +1,304 @@
+/* START pill + video popup for the topic pages, themed to match the index page's Enter button
+   (yellow gradient pill, #af6000 text, blue on hover). */
+
+:where(.video-btn, .video-popup) button {
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.video-btn {
+  position: fixed;
+  bottom: 4vw;
+  left: 3vw;
+  z-index: 10000;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+/* index page: START pill under the home button, top-left (default is bottom-left) */
+.video-btn--top-left {
+  top: 6.5vw;
+  bottom: auto;
+  left: 2vw;
+}
+
+.video-btn.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.start-video-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  padding: 0.4vw 1.6vw 0.4vw 0.45vw;
+  border: 0.22vw solid #fff9e2;
+  border-radius: 5vw;
+  background: linear-gradient(180deg, #fffaaf 0%, #ffe959 100%);
+  color: #af6000;
+  font-family: "Baloo";
+  font-size: 2vw;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 0.25vw 0.45vw rgba(0, 0, 0, 0.28);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.start-video-btn:hover {
+  background: linear-gradient(180deg, #cae7ff 0%, #68bcff 100%);
+  color: #ffffff;
+  transform: scale(1.04);
+}
+
+.start-video-btn:hover .play-circle {
+  background: #ffffff;
+  color: #3a8fd9;
+}
+
+.play-circle {
+  width: 2.8vw;
+  height: 2.8vw;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #af6000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3vw;
+  flex-shrink: 0;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.vp-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vp-icon svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}
+
+/* the play triangle is optically off-centre in its circle, nudge it right */
+.play-circle .vp-icon,
+.custom-play-btn .vp-icon {
+  padding-left: 0.1em;
+}
+
+.video-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+}
+
+.video-popup.active {
+  display: flex;
+}
+
+.video-blur-bg {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(0.8vw);
+  -webkit-backdrop-filter: blur(0.8vw);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.popup-video-box {
+  position: relative;
+  width: 62vw;
+  height: 35vw;
+  z-index: 2;
+  border-radius: 1.5vw;
+  overflow: hidden;
+  background: #000000;
+  border: 0.25vw solid #ffe959;
+  box-shadow: 0 1vw 3vw rgba(0, 0, 0, 0.38);
+  transition:
+    width 0.5s ease,
+    height 0.5s ease,
+    border-radius 0.5s ease;
+}
+
+.popup-video-box.zoomed {
+  width: 85vw;
+  height: 48vw;
+  border-radius: 1vw;
+}
+
+.popup-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.video-click-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  cursor: pointer;
+  background: transparent;
+}
+
+.video-close-btn {
+  position: absolute;
+  top: 7%;
+  right: 15%;
+  z-index: 10;
+  width: 3vw;
+  height: 3vw;
+  border-radius: 50%;
+  border: 0.18vw solid #ffe959;
+  background: #ffffff;
+  color: #3a8fd9;
+  font-size: 1.5vw;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0.35vw 0.8vw rgba(0, 0, 0, 0.3);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.video-close-btn:hover {
+  background: #3a8fd9;
+  color: #ffffff;
+  transform: scale(1.06);
+}
+
+.custom-video-controls {
+  position: absolute;
+  left: 50%;
+  bottom: 1vw;
+  transform: translateX(-50%);
+  width: 92%;
+  height: 3.5vw;
+  padding: 0 1vw;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+  border-radius: 5vw;
+  background: rgba(58, 143, 217, 0.85);
+  border: 0.12vw solid rgba(255, 233, 89, 0.8);
+  backdrop-filter: blur(0.4vw);
+  -webkit-backdrop-filter: blur(0.4vw);
+  box-shadow: inset 0 0 1vw rgba(255, 255, 255, 0.12);
+}
+
+.custom-play-btn,
+.zoom-btn {
+  width: 2.4vw;
+  height: 2.4vw;
+  min-width: 2.4vw;
+  min-height: 2.4vw;
+  max-width: 2.4vw;
+  max-height: 2.4vw;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #3a8fd9;
+  font-size: 1vw;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.custom-play-btn:hover,
+.zoom-btn:hover {
+  background: #ffe959;
+  color: #3a8fd9;
+  transform: scale(1.06);
+}
+
+.video-time {
+  color: #ffffff;
+  font-size: 1vw;
+  font-family: Arial, sans-serif;
+  min-width: 3vw;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* Seekbar: the native range look is switched off so the line and the circle are positioned
+   purely with the vw values below. The input box is as tall as the circle (1vw) and the line
+   (0.45vw) sits in its middle, so the circle's top is pulled up by half the difference:
+   (0.45vw - 1vw) / 2 = -0.275vw, which puts the circle's centre exactly on the line. */
+.video-progress {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 1vw;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.video-progress:focus {
+  outline: none;
+}
+
+.video-progress::-webkit-slider-runnable-track {
+  height: 0.45vw;
+  border-radius: 5vw;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.video-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  width: 1vw;
+  height: 1vw;
+  margin-top: -0.275vw;
+  border-radius: 50%;
+  background: #ffe959;
+  border: 0.15vw solid #ffffff;
+  cursor: pointer;
+}
+
+.video-progress::-moz-range-track {
+  height: 0.45vw;
+  border-radius: 5vw;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.video-progress::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 1vw;
+  height: 1vw;
+  border-radius: 50%;
+  background: #ffe959;
+  border: 0.15vw solid #ffffff;
+  cursor: pointer;
+}

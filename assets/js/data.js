@@ -21,6 +21,7 @@ const topicPagesData = {
     slides: [
       {
         video: "./assets/videos/1/1.mp4",
+        startVideo: "./assets/videos/v1.webm",
 
         content: "Politeness is a form of respect toward others.",
         contenthi: "विनम्रता दूसरों के प्रति आदर का एक रूप है।",
@@ -575,6 +576,7 @@ const topicPagesData = {
 
       {
         video: "./assets/videos/5/5.mp4",
+        startVideo: "./assets/videos/v2.webm",
         content: "Enemies turn into friends by being polite.",
         contenthi: "विनम्र होने से दुश्मन भी दोस्त बन जाते हैं।",
         contentgj: "વિનમ્રતાથી દુશ્મન પણ મિત્ર બની જાય છે.",

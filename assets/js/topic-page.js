@@ -197,11 +197,25 @@
         });
     }
 
+    // ---- START pill (video popup) ----
+    // a slide with a startVideo in data.js gets a START pill that plays that video in a popup;
+    // the pill only shows while its slide is active (see assets/js/video-popup.js)
+    var startPopup = null;
+    var startSlideIndex = data.slides.findIndex(function (slide) { return slide.startVideo; });
+    if (startSlideIndex !== -1 && typeof initVideoPopup === "function") {
+        startPopup = initVideoPopup({
+            src: data.slides[startSlideIndex].startVideo,
+            slideIndex: startSlideIndex,
+        });
+        startPopup.sync(mainSwiper.activeIndex);
+    }
+
     mainSwiper.on("slideChange", function () {
         captionSwiper.slideTo(mainSwiper.activeIndex);
         updateArrows();
         updateDialogueGroups();
         updateSlideVideos();
+        if (startPopup) startPopup.sync(mainSwiper.activeIndex);
     });
 
     updateArrows();
